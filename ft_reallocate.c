@@ -18,7 +18,7 @@ void		*ft_reallocate(void *ptr, size_t size)
 		return(ft_freeptr(ptr));
 	if (p = ft_memalloc(size))
 	{
-		length = (ft_strlen((const char *)ptr) >= size) ? size : ft_strlen((const char *)ptr);
+		length = (ft_strlen((const char *)ptr) >= size) ? size : (ft_strlen((const char *)ptr) + 1);
 		temp = ft_memcpy(p, ptr, length);
 		ft_freeptr(ptr);
 		return (temp);
