@@ -47,6 +47,5 @@ int	get_next_line(const int fd, char **line)
 		else
 			buf[fd] = ft_reallocate(buf[fd], temp + 1);
 	}
-	//read and write to line (function)
-	return (0);
+	return (ft_readline(buf[fd], **line));
 }
