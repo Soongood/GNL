@@ -6,7 +6,7 @@
 /*   By: trobbin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/29 07:30:51 by trobbin           #+#    #+#             */
-/*   Updated: 2019/10/09 22:21:45 by trobbin          ###   ########.fr       */
+/*   Updated: 2019/10/16 00:47:56 by trobbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 # define _GET_NEXT_LINE_H
 #  define BUFF_SIZE 512
 
-# include <sys/types.h>
+# include "libft/libft.h"
+# include <limits.h>
 
+int ft_readline(char *buffer, char **line, int file_d);
 int	get_next_line(const int fd, char **line);
 
 #endif
