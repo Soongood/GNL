@@ -26,9 +26,8 @@ int	ft_readline(char *buffer, char **line, int file_d)
 		{
 			if ((bytes = read(file_d, temp_buffer, BUFF_SIZE)))
 			{
-				temp_ptr = buffer;
-				buffer = ft_realloc(buffer + shift, ft_strlen(temp_buffer) + 1);
-				buffer = temp_ptr;
+				buffer = ft_realloc(buffer, ft_strlen(buffer) + BUFF_SIZE);
+				buffer = ft_strcpy(buffer, temp_buffer);
 				return (ft_readline(buffer, line, file_d));
 			}
 			*line = ft_strcpy(*line, buffer);
@@ -36,8 +35,9 @@ int	ft_readline(char *buffer, char **line, int file_d)
 		}
 		shift++;
 	}
-	*line = ft_memcpy((void *)*line, (void *)buffer, shift + 1);
-	temp_ptr = ft_realloc(buffer + shift + 1, ft_strlen(buffer) - shift - 1);
+	*line = ft_memcpy(*line, buffer, shift);
+	temp_ptr = ft_realloc(temp_ptr, ft_strlen(buffer) - shift + 1);
+	temp_ptr = ft_strcpy(temp_ptr, buffer + shift + 1);
 	free(buffer);
 	buffer = temp_ptr;
 	return (1);
@@ -56,5 +56,5 @@ int	get_next_line(const int fd, char **line)
 		if ((bytes = read(fd, buf[fd], BUFF_SIZE)) <= 0)
 			return (-1);
 	}
-	return (ft_readline(buf[fd], line, fd));
+ 	return (ft_readline(buf[fd], line, fd));
 }
