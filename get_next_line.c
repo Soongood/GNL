@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-int	ft_readline(char *buffer, char **line, int file_d)
+int	ft_readline(char **buffer, char **line, int file_d)
 {
 	size_t		shift;
 	int		bytes;
@@ -20,41 +20,42 @@ int	ft_readline(char *buffer, char **line, int file_d)
 	char	temp_buffer[BUFF_SIZE];
 
 	shift = 0;
-	while (buffer[shift] != '\n')
+	while ((*buffer)[shift] != '\n')
 	{
-		if (!buffer[shift])
+		if (!(*buffer)[shift++])
 		{
 			if ((bytes = read(file_d, temp_buffer, BUFF_SIZE)))
 			{
-				buffer = ft_realloc(buffer, ft_strlen(buffer) + BUFF_SIZE);
-				buffer = ft_strcpy(buffer, temp_buffer);
+				*buffer = ft_realloc(*buffer, ft_strlen(*buffer) + BUFF_SIZE + 1);
+				temp_ptr = ft_strcpy((*buffer) + ft_strlen(*buffer), temp_buffer);
 				return (ft_readline(buffer, line, file_d));
 			}
-			*line = ft_strcpy(*line, buffer);
-			return (0);
+			*line = ft_strdup(*buffer);
+			free(*buffer);
+			return (1);
 		}
-		shift++;
 	}
-	*line = ft_memcpy(*line, buffer, shift);
-	temp_ptr = ft_realloc(temp_ptr, ft_strlen(buffer) - shift + 1);
-	temp_ptr = ft_strcpy(temp_ptr, buffer + shift + 1);
-	free(buffer);
-	buffer = temp_ptr;
+	*line = ft_strsub(*buffer, 0, shift);
+	temp_ptr = ft_strsub((*buffer) + shift + 1, 0, ft_strlen(*buffer) - shift);
+	free(*buffer);
+	*buffer = temp_ptr;
 	return (1);
 }
 
 int	get_next_line(const int fd, char **line)
 {
-	static char	*buf[OPEN_MAX + 1];
+	static char	*buf[_SC_OPEN_MAX + 1];
 	int		bytes;
 
-	if (fd >= OPEN_MAX || fd < 0 || !line || !BUFF_SIZE)
+	if (fd >= _SC_OPEN_MAX || fd < 0 || !line || !BUFF_SIZE)
 		return (-1);
 	if (!buf[fd])
 	{
-		buf[fd] = ft_realloc(buf[fd], BUFF_SIZE + 1);
+		buf[fd] = ft_memalloc(BUFF_SIZE + 1);
 		if ((bytes = read(fd, buf[fd], BUFF_SIZE)) <= 0)
 			return (-1);
 	}
- 	return (ft_readline(buf[fd], line, fd));
+	if (*buf[fd])
+		return (ft_readline(&buf[fd], line, fd));
+	return (0);
 }
