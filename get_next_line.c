@@ -5,47 +5,45 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: trobbin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/25 17:41:57 by trobbin           #+#    #+#             */
-/*   Updated: 2019/10/16 01:05:08 by trobbin          ###   ########.fr       */
+/*   Created: 2019/10/27 21:43:06 by trobbin           #+#    #+#             */
+/*   Updated: 2019/10/28 02:29:32 by trobbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	ft_readline(char **buffer, char **line, int file_d)
+int	ft_readline(char **buf, char **line, int file_d)
 {
-	size_t		shift;
-	int		bytes;
-	char	*temp_ptr;
-	char	temp_buffer[BUFF_SIZE];
+	size_t			shift;
+	int				bytes;
+	char			*temp_ptr;
+	char			temp_buf[BUFF_SIZE];
 
 	shift = 0;
-	while (!ft_strlen(*buffer) || (*buffer)[shift] != '\n')
-	{
-		if (!(*buffer)[shift++])
+	while (!ft_strlen(*buf) || (*buf)[shift] != '\n')
+		if (!(*buf)[shift++])
 		{
-			if ((bytes = read(file_d, temp_buffer, BUFF_SIZE)))
+			if ((bytes = read(file_d, temp_buf, BUFF_SIZE)))
 			{
-				*buffer = ft_realloc(*buffer, ft_strlen(*buffer) + bytes + 1);
-				temp_ptr = ft_memcpy((*buffer) + ft_strlen(*buffer), temp_buffer, bytes);
+				*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1);
+				temp_ptr = ft_memcpy((*buf) + ft_strlen(*buf), temp_buf, bytes);
 				continue ;
 			}
-			*line = ft_strlen(*buffer) ? ft_strdup(*buffer) : NULL;
-			ft_memdel((void **)buffer);
+			*line = ft_strlen(*buf) ? ft_strdup(*buf) : NULL;
+			ft_memdel((void **)buf);
 			return (*line ? 1 : 0);
 		}
-	}
-	*line = ft_strsub(*buffer, 0, shift);
-	temp_ptr = ft_strsub((*buffer) + shift + 1, 0, ft_strlen(*buffer) - shift);
-	ft_memdel((void **)buffer);
-	*buffer = temp_ptr;
+	*line = ft_strsub(*buf, 0, shift);
+	temp_ptr = ft_strsub((*buf) + shift + 1, 0, ft_strlen(*buf) - shift);
+	ft_memdel((void **)buf);
+	*buf = temp_ptr;
 	return (1);
 }
 
 int	get_next_line(const int fd, char **line)
 {
-	static char	*buf[FD_SIZE + 1];
-	int		bytes;
+	static char		*buf[FD_SIZE + 1];
+	int				bytes;
 
 	if (fd >= FD_SIZE || fd < 0 || !line || !BUFF_SIZE)
 		return (-1);
@@ -56,7 +54,7 @@ int	get_next_line(const int fd, char **line)
 		{
 			ft_memdel((void **)&buf[fd]);
 			*line = NULL;
-			return (!bytes ? 0 : -1);	
+			return (!bytes ? 0 : -1);
 		}
 	}
 	if (buf[fd])
