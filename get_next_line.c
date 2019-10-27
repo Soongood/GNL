@@ -30,12 +30,12 @@ int	ft_readline(char **buffer, char **line, int file_d)
 				temp_ptr = ft_memcpy((*buffer) + ft_strlen(*buffer), temp_buffer, bytes);
 				return (ft_readline(buffer, line, file_d));
 			}
-			*line = ft_strdup(*buffer);
+			*line = ft_strlen(*buffer) ? ft_strdup(*buffer) : NULL;
 			ft_memdel((void **)buffer);
-			return (1);
+			return (*line ? 1 : 0);
 		}
 	}
-	*line = ft_strsub(*buffer, 0, (!shift) ? 1 : shift);
+	*line = ft_strsub(*buffer, 0, shift);
 	temp_ptr = ft_strsub((*buffer) + shift + 1, 0, ft_strlen(*buffer) - shift);
 	ft_memdel((void **)buffer);
 	*buffer = temp_ptr;
@@ -55,12 +55,11 @@ int	get_next_line(const int fd, char **line)
 		if ((bytes = read(fd, buf[fd], BUFF_SIZE)) <= 0)
 		{
 			ft_memdel((void **)&buf[fd]);
-			if (bytes < 0)
-				return (-1);
 			*line = NULL;
-			return (0);	
+			return (!bytes ? 0 : -1);	
 		}
 	}
 	if (buf[fd])
 		return (ft_readline(&buf[fd], line, fd));
+	return (1);
 }
