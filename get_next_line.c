@@ -26,9 +26,9 @@ int	ft_readline(char **buffer, char **line, int file_d)
 		{
 			if ((bytes = read(file_d, temp_buffer, BUFF_SIZE)))
 			{
-				*buffer = ft_realloc(*buffer, ft_strlen(*buffer) + BUFF_SIZE + 1);
+				*buffer = ft_realloc(*buffer, ft_strlen(*buffer) + bytes + 1);
 				temp_ptr = ft_memcpy((*buffer) + ft_strlen(*buffer), temp_buffer, bytes);
-				return (ft_readline(buffer, line, file_d));
+				continue ;
 			}
 			*line = ft_strlen(*buffer) ? ft_strdup(*buffer) : NULL;
 			ft_memdel((void **)buffer);
