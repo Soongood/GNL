@@ -15,7 +15,7 @@
 #  define BUFF_SIZE 512
 #   define FD_SIZE 1024
 
-# include "libft.h"
+# include "libft/libft.h"
 
 int ft_readline(char **buffer, char **line, int fd);
 int	get_next_line(const int fd, char **line);
