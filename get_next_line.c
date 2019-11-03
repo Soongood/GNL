@@ -20,7 +20,7 @@ int	ft_readline(char **buf, char **line, int file_d)
 	char			temp_buf[BUFF_SIZE];
 
 	shift = 0;
-	while (!ft_strlen(*buf) || (*buf)[shift] != '\n')
+	while (!(**buf) || (*buf)[shift ? shift - 1 : 0] != '\n')
 		if (!(*buf)[shift++])
 		{
 			if ((bytes = read(file_d, temp_buf, BUFF_SIZE)))
@@ -33,7 +33,7 @@ int	ft_readline(char **buf, char **line, int file_d)
 			ft_memdel((void **)buf);
 			return (*line ? 1 : 0);
 		}
-	*line = ft_strsub(*buf, 0, shift);
+	*line = ft_strsub(*buf, 0, (shift = shift ? shift - 1 : shift));
 	temp_ptr = ft_strsub((*buf) + shift + 1, 0, ft_strlen(*buf) - shift);
 	ft_memdel((void **)buf);
 	*buf = temp_ptr;
