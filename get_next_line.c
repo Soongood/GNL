@@ -6,7 +6,7 @@
 /*   By: trobbin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 21:43:06 by trobbin           #+#    #+#             */
-/*   Updated: 2019/11/01 17:01:22 by trobbin          ###   ########.fr       */
+/*   Updated: 2019/11/05 18:01:35 by trobbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 
 int	ft_readline(char **buf, char **line, int file_d)
 {
-	size_t			shift;
+	size_t			i;
 	int				bytes;
 	char			*temp_ptr;
 	char			temp_buf[BUFF_SIZE];
 
-	shift = 0;
-	while (!(**buf) || (*buf)[shift ? shift - 1 : 0] != '\n')
-		if (!(*buf)[shift++])
+	i = 0;
+	while (!(**buf) || (*buf)[i ? i - 1 : 0] != '\n')
+		if (!(*buf)[i++])
 		{
 			if ((bytes = read(file_d, temp_buf, BUFF_SIZE)))
 			{
-				*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1);
+				(*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1));
 				temp_ptr = ft_memcpy((*buf) + ft_strlen(*buf), temp_buf, bytes);
 				continue ;
 			}
@@ -33,8 +33,8 @@ int	ft_readline(char **buf, char **line, int file_d)
 			ft_memdel((void **)buf);
 			return (*line ? 1 : 0);
 		}
-	*line = ft_strsub(*buf, 0, (shift = shift ? shift - 1 : shift));
-	temp_ptr = ft_strsub((*buf) + shift + 1, 0, ft_strlen(*buf) - shift);
+	*line = ft_strsub(*buf, 0, i ? i - 1 : i);
+	temp_ptr = ft_strsub((*buf) + (i ? i - 1 : i) + 1, 0, ft_strlen(*buf) - i);
 	ft_memdel((void **)buf);
 	*buf = temp_ptr;
 	return (1);
