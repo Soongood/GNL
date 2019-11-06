@@ -25,7 +25,7 @@ int	ft_readline(char **buf, char **line, int file_d)
 		{
 			if ((bytes = read(file_d, temp_buf, BUFF_SIZE)))
 			{
-				(*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1));
+				*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1);
 				temp_ptr = ft_memcpy((*buf) + ft_strlen(*buf), temp_buf, bytes);
 				continue ;
 			}
