@@ -25,7 +25,8 @@ int	ft_readline(char **buf, char **line, int file_d)
 		{
 			if ((bytes = read(file_d, temp_buf, BUFF_SIZE)))
 			{
-				*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1);
+				if (!(*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1)))
+					return (-1);
 				temp_ptr = ft_memcpy((*buf) + ft_strlen(*buf), temp_buf, bytes);
 				continue ;
 			}
@@ -45,7 +46,7 @@ int	get_next_line(const int fd, char **line)
 	static char		*buf[FD_SIZE + 1];
 	int				bytes;
 
-	if (fd >= FD_SIZE || fd < 0 || !line || !BUFF_SIZE)
+	if (fd >= FD_SIZE || fd < 0 || !line || !BUFF_SIZE || read(fd, buf[fd], 0) < 0)
 		return (-1);
 	if (!buf[fd])
 	{
