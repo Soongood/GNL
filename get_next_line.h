@@ -6,17 +6,21 @@
 /*   By: trobbin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/29 07:30:51 by trobbin           #+#    #+#             */
-/*   Updated: 2019/11/01 17:01:05 by trobbin          ###   ########.fr       */
+/*   Updated: 2019/11/19 06:05:35 by trobbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _GET_NEXT_LINE_H
-# define _GET_NEXT_LINE_H
-# define BUFF_SIZE 512
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+
 # include "libft/libft.h"
 
-t_list *find_fd(t_list **gnl, int file_d);
-int ft_readline(char **buffer, char **line, int fd);
-int	get_next_line(const int fd, char **line);
+# define BUFF_SIZE 2056
+# define FD_SIZE 1024
+# define GNL_EOF 0
+# define GNL_ERROR -1
+# define GNL_OK 1
+
+int		get_next_line(const int fd, char **line);
 
 #endif

@@ -1,70 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: trobbin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/27 21:43:06 by trobbin           #+#    #+#             */
+/*   Updated: 2019/11/19 06:05:25 by trobbin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int	ft_readline(char **buf, char **line, int file_d)
+static int	ft_readline(char **buf, char **line)
 {
-	size_t			shift;
-	int				bytes;
-	char			*temp_ptr;
-	char			temp_buf[BUFF_SIZE];
+	char	*temp_ptr;
+	char	*nl;
 
-	shift = 0;
-	while (!(**buf) || (*buf)[shift ? shift - 1 : 0] != '\n')
-		if (!(*buf)[shift++])
-		{
-			if ((bytes = read(file_d, temp_buf, BUFF_SIZE)))
-			{
-				if (!(*buf = ft_realloc(*buf, ft_strlen(*buf) + bytes + 1)))
-					return (-1);
-				temp_ptr = ft_memcpy((*buf) + ft_strlen(*buf), temp_buf, bytes);
-				continue ;
-			}
-			*line = ft_strlen(*buf) ? ft_strdup(*buf) : '\0';
-			ft_memdel((void **)buf);
-			return (*line ? 1 : 0);
-		}
-	*line = ft_strsub(*buf, 0, (shift = shift ? shift - 1 : shift));
-	temp_ptr = ft_strsub((*buf) + shift + 1, 0, ft_strlen(*buf) - shift);
-	ft_memdel((void **)buf);
-	*buf = temp_ptr;
-	return (1);
+	temp_ptr = *buf;
+	nl = ft_strchr(*buf, '\n');
+	*line = nl ? ft_strsub(*buf, 0, nl - *buf) : ft_strdup(*buf);
+	*buf = nl ? ft_strsub(nl + 1, 0, ft_strlen(nl + 1)) : ft_strnew(0);
+	free(temp_ptr);
+	return (*line && *buf ? GNL_OK : GNL_ERROR);
 }
 
-t_list *find_fd(t_list **gnl, int file_d)
+int			get_next_line(const int fd, char **line)
 {
-	t_list *tmp;
+	ssize_t			bytes;
+	static char		*buf[FD_SIZE + 1];
+	char			tmp_buf[BUFF_SIZE + 1];
+	char			*tmp;
 
-	tmp = *gnl;
-	while (tmp)
+	if (fd >= FD_SIZE || !line || read(fd, NULL, 0) < 0)
+		return (GNL_ERROR);
+	if (!buf[fd] && (!(buf[fd] = ft_strnew(0))))
+		return (GNL_ERROR);
+	while ((bytes = read(fd, tmp_buf, BUFF_SIZE)))
 	{
-		if ((int)tmp->content_size == file_d)
-				return (tmp);
-		tmp = tmp->next;
+		tmp = buf[fd];
+		tmp_buf[bytes] = '\0';
+		buf[fd] = ft_strjoin(buf[fd], tmp_buf);
+		free(tmp);
+		if (bytes < BUFF_SIZE || ft_strchr(tmp_buf, '\n'))
+			break ;
 	}
-	if (!(tmp = (t_list *)malloc(sizeof(t_list))))
-		return (NULL);
-	if ((tmp->content = ft_memalloc(BUFF_SIZE + 1)))
+	if (bytes == 0 && !*buf[fd])
 	{
-		tmp->content_size = file_d;
-		tmp->next = NULL;
-		ft_lstadd(gnl, tmp);
-		tmp = *gnl;
-		return (tmp);
+		free(buf[fd]);
+		buf[fd] = NULL;
+		return (GNL_EOF);
 	}
-	return (NULL);
-}
-
-int get_next_line(const int fd, char **line)
-{
-	static	t_list *gnl;
-	t_list	*current;
-
-	if (!(current = find_fd(&gnl, fd)) || !line || fd < 0 
-									|| read(fd, NULL, 0) < 0)
-		return (-1);
-	if (!(current->content))
-	{
-			*line = '\0';
-			return (0);
-	}
-	return (ft_readline((char **)&(current->content), line, fd));
+	return (ft_readline(&buf[fd], line));
 }
