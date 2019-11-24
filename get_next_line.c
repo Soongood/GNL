@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: trobbin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/24 15:13:43 by trobbin           #+#    #+#             */
+/*   Updated: 2019/11/24 15:20:45 by trobbin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-static int	ft_readline(char **buf, char **line)
+static	int			ft_readline(char **buf, char **line)
 {
 	char			*temp_ptr;
 	char			*nl;
@@ -13,16 +25,16 @@ static int	ft_readline(char **buf, char **line)
 	return (*line && *buf ? GNL_OK : GNL_ERROR);
 }
 
-static t_gnl *find_fd(t_gnl **gnl,const int file_d)
+static	t_gnl		*find_fd(t_gnl **gnl, const int file_d)
 {
-	t_gnl *tmp;
+	t_gnl			*tmp;
 
 	tmp = *gnl;
 	while (tmp)
 		if ((int)tmp->fd == file_d)
-				return (tmp);
+			return (tmp);
 		else
-				tmp = tmp->next;
+			tmp = tmp->next;
 	if (!(tmp = (t_gnl *)malloc(sizeof(t_gnl))))
 		return (NULL);
 	if (!(tmp->content = ft_strnew(BUFF_SIZE)))
@@ -36,15 +48,16 @@ static t_gnl *find_fd(t_gnl **gnl,const int file_d)
 	return (tmp);
 }
 
-int get_next_line(const int fd, char **line)
+int					get_next_line(const int fd, char **line)
 {
-	char	*temp;
-	char	tmp_buf[BUFF_SIZE + 1];
-	ssize_t	bytes;
-	static	t_gnl *gnl;
-	t_gnl	*current;
+	char			*temp;
+	char			tmp_buf[BUFF_SIZE + 1];
+	ssize_t			bytes;
+	static	t_gnl	*gnl;
+	t_gnl			*current;
 
-	if (fd < 0 || !line || read(fd, NULL, 0) < 0 || !(current = find_fd(&gnl, fd)))
+	if (fd < 0 || !line || read(fd, NULL, 0) < 0 ||
+										!(current = find_fd(&gnl, fd)))
 		return (GNL_ERROR);
 	while ((bytes = read(current->fd, tmp_buf, BUFF_SIZE)))
 	{
