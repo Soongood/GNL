@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_v1.h"
 
 int	ft_readline(char **buf, char **line, int file_d)
 {
