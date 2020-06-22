@@ -1,17 +1,9 @@
-# GNL
-get_next_line
+## GNL 42 school's project
 
-This project consist of writing a function get_next_line which get the next line
-in a file.
-There are some features this function must implement:
+A C function that reads any valid file line by line until the end.
 
-There are some features this function must implement:
-* we only use libft.
-* we need to implement a buffer. We can't come back in the file descriptor. We can't move in the
-  file descriptor. We can only use *read*, *free*, *malloc*. No call to lseek.
-* we can't use global variable.
-* we can't use FILE structure. We need to create one.
-* we can read multiple file descriptors at the same time (which implies a
-  buffer).
-* we can't have memory leaks: every malloc must be freed.
-* the buffer size (use by read) can be changed.
+[get_next_line](get_next_line.en.pdf) is an individual project at [42](https://www.42.us.org/) that basically reads a file line by line.
+
+Disclaimer: There are so many easier methods of doing this by using standard C functions. But the goal here is to be able to do it by using any functions from my [libft](https://github.com/Soongood/libft) and only the standard functions read, malloc and free.
+
+After finishing this project, you'll definitely learn some more about static variables, pointers, arrays, linked lists (if you decide to do the bonus part), dynamic memory allocation and file manipulation.
